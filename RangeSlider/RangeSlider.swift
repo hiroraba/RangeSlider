@@ -97,6 +97,7 @@ class RangeSlider: UIControl {
         }
     }
     
+    
     func addSubviews() {
     }
     
@@ -142,12 +143,61 @@ class RangeSlider: UIControl {
         self.setNeedsLayout()
     }
     
+    func setLowerValue(lowerValue: Float, upperValue: Float, animated: Bool) {
+        
+        if !animated && (isnan(lowerValue) || lowerValue == self.lowerValue) && (isnan(upperValue) || upperValue == self.upperValue) {
+            return
+        }
+        
+        if animated {
+            UIView.animateWithDuration(0.25, animations: { () -> Void in
+                self.layoutSubviews()
+                }, completion: { (Bool) -> Void in
+            })
+        } else {
+            self.layoutSubviews()
+        }
+        
+    }
+    
+    func setUpperValue(lowerValue: Float, upperValue: Float, animated: Bool) {
+        
+        if !animated && (isnan(lowerValue) || lowerValue == self.lowerValue) && (isnan(upperValue) || upperValue == self.upperValue) {
+            return
+        }
+        
+        if animated {
+            UIView.animateWithDuration(0.25, animations: { () -> Void in
+                if !isnan(lowerValue)
+                {
+                    self.setLowerValue(lowerValue)
+                }
+                if(!isnan(upperValue))
+                {
+                    self.setUpperValue(upperValue)
+                }
+                self.layoutSubviews()
+                }, completion: { (Bool) -> Void in
+            })
+        } else {
+            if(!isnan(lowerValue))
+            {
+                self.setLowerValue(lowerValue)
+            }
+            if(!isnan(upperValue))
+            {
+                self.setUpperValue(upperValue)
+            }
+        }
+        
+    }
+    
+    
     func setLowerValue(lowerValue: Float, animated: Bool) {
+        self.setLowerValue(lowerValue, upperValue: 0/0, animated: animated)
     }
     
     func setUpperValue(upperValue: Float, animated: Bool) {
-    }
-    
-    func setLowerValue(lowerValue: Float, upperValue: Float, animated: Bool) {
+        self.setLowerValue(0/0, upperValue: upperValue, animated: animated)
     }
 }
